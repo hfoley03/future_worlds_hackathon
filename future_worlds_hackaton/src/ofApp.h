@@ -56,6 +56,12 @@ class ofApp : public ofBaseApp{
     int imgWidth;
     int imgHeight;
     
+    void squares(ofPolyline polyline);
+    
+    vector<ofPolyline> landmasses;
+    
+    void createLandmasses();
+    
 
 		
 };

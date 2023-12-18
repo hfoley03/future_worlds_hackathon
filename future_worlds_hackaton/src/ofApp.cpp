@@ -9,6 +9,101 @@ void ofApp::setup(){
 //    oscOut.setup("localhost", 7331);
 //    oscIn.setup(7331);
     
+    createLandmasses();
+}
+
+//--------------------------------------------------------------
+void ofApp::update(){
+    //    sendOsc();
+    //    receiveOsc();
+
+}
+
+//--------------------------------------------------------------
+void ofApp::draw(){
+    ofSetRectMode(OF_RECTMODE_CORNER);
+
+//    centreH = ofGetHeight()/2;
+//    centreW = ofGetWidth()/2;
+//    ofDrawBitmapStringHighlight("timeSent " + ofToString(timeSent, 3) , 50, 50);
+
+//    ofNoFill();
+    ofSetColor(200, 200, 200);
+    ofDrawCircle(imgWidth/2 + 100 , imgHeight/2 + 100, imgWidth/2 - 10);
+
+
+
+    
+    
+    ofSetColor(0, 0, 0, 255);
+    
+    for (int i = 0; i < landmasses.size(); i++){
+        landmasses[i].draw();
+        
+//        ofMesh theMesh;
+//        ofTessellator tess;
+//        // **** convert poly to mesh ****
+//        tess.tessellateToMesh(landmasses[i], ofPolyWindingMode::OF_POLY_WINDING_ODD, theMesh, true);
+//        theMesh.draw();
+        ofDrawBitmapStringHighlight(ofToString(i), landmasses[i].getCentroid2D().x, landmasses[i].getCentroid2D().y);
+    }
+    
+    
+    ofSetColor(255, 0, 0);
+//    ofDrawCircle(300,300, 10);
+//    for (int k = 0; k < landmasses.size(); k++)
+//    {
+//        bool checkIfInside = landmasses[k].inside(300, 300);
+//        if(checkIfInside){
+//            std::cout<<"HIT: "<< k <<std::endl;
+//        }
+//    }
+    ofPolyline worldCircle;
+    ofSetRectMode(OF_RECTMODE_CENTER);
+    ofSetColor(0, 255, 0, 20);
+    for(int i = 0; i < ofGetWidth(); i = i + 2)
+    {
+        for(int j = 0; j< ofGetHeight(); j = j +2)
+        {
+            ofSetColor(0, 0, 0, 255);
+            if( ofDist(i,j,imgWidth/2 + 100 , imgHeight/2 + 100) <= (imgWidth/2 - 10)){
+                ofSetColor(0, 0, 255, 200);
+                bool checkIfInside = false;
+                bool notFound = false;
+                int foundInLandmass = -1;
+                while(checkIfInside == false && notFound == false){
+                    for (int k = 0; k < landmasses.size(); k++)
+                    {
+                        checkIfInside = landmasses[k].inside(i, j);
+                        if(checkIfInside){
+                            foundInLandmass = k;
+                            break;
+                        }
+                    }
+                    notFound = true;
+                }
+                
+                
+                if(notFound){
+                    //ofSetColor(0, 0, 0, 50);
+                }
+                if(checkIfInside){
+                    ofSetColor(0, 255, 0, 50);
+                }
+                if(foundInLandmass==1){
+                    ofSetColor(255, 255, 255);
+                }
+            }
+            ofDrawRectangle(i, j, 2, 2);
+        }
+    }
+}
+
+void ofApp::squares(ofPolyline polyline){
+    
+}
+
+void ofApp::createLandmasses(){
     worldIcon.load("images/worldGraphic4.png");
     worldIcon.resize(445, 438);
     worldIcon.setImageType(OF_IMAGE_GRAYSCALE);
@@ -17,10 +112,8 @@ void ofApp::setup(){
     std::cout<< imgWidth << std::endl;
     std::cout<< imgHeight << std::endl;
 
-    colorImg.allocate(imgWidth,imgHeight);
     grayImage.allocate(imgWidth,imgHeight);
-    grayBg.allocate(imgWidth,imgHeight);
-    grayDiff.allocate(imgWidth,imgHeight);
+
 
     thresholdValue = 168;
     thresh = 0.0f;
@@ -28,60 +121,22 @@ void ofApp::setup(){
     grayImage.setFromPixels(worldIcon.getPixels());
     grayImage.threshold(168);
     contourFinder.findContours(grayImage, 100, 45000, 10, true);
-}
-
-//--------------------------------------------------------------
-void ofApp::update(){
-    //    sendOsc();
-    //    receiveOsc();
     
-//    thresholdValue = (int)(255* (mouseX/ofGetWidth()));
-    
-//    thresh =  255*(float)mouseX / (float)ofGetWidth();
-    
-
-}
-
-//--------------------------------------------------------------
-void ofApp::draw(){
-    centreH = ofGetHeight()/2;
-    centreW = ofGetWidth()/2;
-//    ofDrawEllipse(centreW, centreH, 200, 200);
-//    ofDrawBitmapStringHighlight("timeSent " + ofToString(timeSent, 3) , 50, 50);
-//    ofDrawBitmapStringHighlight("timeRec " + ofToString(timeReceived, 3) , 50, 90);
-//    ofDrawBitmapStringHighlight("Between " + ofToString(timeSent - timeReceived, 3) , 50, 120);
-    
-//    ofDrawBitmapStringHighlight("threshold " + ofToString(thresh, 3) , 50, 50);
-    ofNoFill();
-    ofDrawCircle(imgWidth/2 + 100 , imgHeight/2 + 100, imgWidth/2 - 5);
     int numBlobs = contourFinder.nBlobs;
     for (int i=0; i<numBlobs; i++){
         
         if(i!=1 && i !=3){
-            
-            //contourFinder.blobs[i].draw(0,0);
-            int num = contourFinder.blobs[i].nPts;
-            ofSetColor(255, 100);
-
-            ofDrawBitmapStringHighlight(ofToString(i), contourFinder.blobs[i].centroid.x + 100, contourFinder.blobs[i].centroid.y + 100);
-            
             ofPolyline polyline;
-            ofSetColor(255, 255, 0);
-
-            // Add points to the polyline
             for(auto & point : contourFinder.blobs[i].pts) {
                 polyline.addVertex(point.x + 100, point.y + 100);
-//                ofDrawCircle(point, 1);
             }
-            ofSetColor(255, 255, 255);
             polyline.close();
-            polyline.draw();
-            
-            
+            polyline.simplify();
+            landmasses.push_back(polyline);
         }
     }
-    
 }
+
 
 void ofApp::sendOsc(){
     timeSent = ofGetElapsedTimef();

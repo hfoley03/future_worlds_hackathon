@@ -62,6 +62,13 @@ class ofApp : public ofBaseApp{
     
     void createLandmasses();
     
+    int startYear;
+    int endYear;
+    int currentYear;
+    
+    int offsetX; //used to reposition
+    int offsetY;
+    
 
 		
 };

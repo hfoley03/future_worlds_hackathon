@@ -2,6 +2,8 @@
 
 #include "ofMain.h"
 #include "ofxOsc.h"
+#include "ofxOpenCv.h"
+
 
 #define PORT 7331
 
@@ -39,6 +41,20 @@ class ofApp : public ofBaseApp{
     
     float timeSent, timeReceived;
     
+    ofImage worldIcon;
+    
+    ofxCvColorImage            colorImg;
+    ofxCvGrayscaleImage     grayImage;
+    ofxCvGrayscaleImage     grayBg;
+    ofxCvGrayscaleImage     grayDiff;
+    ofxCvContourFinder        contourFinder;
+
+    int                        thresholdValue;
+    float thresh;
+    bool                    bLearnBackground;
+    
+    int imgWidth;
+    int imgHeight;
     
 
 		

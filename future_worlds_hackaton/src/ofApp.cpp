@@ -24,8 +24,8 @@ void ofApp::setup(){
     
     ofBackground(0);
     ofSetCircleResolution(100);
-    oscOut.setup("localhost", 7331);    //OSC
-    oscIn.setup(7331);                  //OSC
+    oscOut.setup("localhost", 8000);    //OSC
+    oscIn.setup(8000);                  //OSC
     offsetX = centreW/2;
     offsetY = centreH/2;
     createLandmasses(); // only calling this in setup to save processing power, should be called everytime window is resized, not important for now
@@ -35,8 +35,8 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    //    sendOsc();
-    //    receiveOsc();
+    sendOsc();
+    receiveOsc();
     centreH = ofGetHeight()/2;
     centreW = ofGetWidth()/2;
     orbit1 = centreH*2;
@@ -88,6 +88,14 @@ void ofApp::draw(){
     ofDrawBitmapStringHighlight("Pollution increasing:  " + ofToString(pollutionIncreasing) , 700, 70);
     ofDrawBitmapStringHighlight("Industry increasing:   " + ofToString(industryIncreasing) , 700, 90);
     ofDrawBitmapStringHighlight("Food incsreasing:       " + ofToString(foodIncreasing) ,700, 110);
+    
+    ofDrawBitmapStringHighlight("time sent:       " + ofToString(timeSent) ,700, 200);
+    ofDrawBitmapStringHighlight("dick rec:       " + ofToString(timeReceived) ,700, 220);
+    ofDrawBitmapStringHighlight("shit betwen:       " + ofToString(timeReceived) ,700, 250);
+
+    
+
+
     
 
 
@@ -314,17 +322,28 @@ void ofApp::createEarthVector(){
 
 void ofApp::sendOsc(){
     timeSent = ofGetElapsedTimef();
-    ofxOscMessage m;
-    m.setAddress("/time");
-    m.addFloatArg(timeSent);
-    oscOut.sendMessage(m);
+    ofxOscMessage m1;
+    m1.setAddress("/dick/");
+    m1.addFloatArg(timeSent);
+
+    oscOut.sendMessage(m1);
+    
+    ofxOscMessage m2;
+    m2.setAddress("/shit/");
+    m2.addFloatArg(timeSent + 100);
+    
+    oscOut.sendMessage(m2);
+
 }
 
 void ofApp::receiveOsc(){
     while(oscIn.hasWaitingMessages()){
         ofxOscMessage msg;
         oscIn.getNextMessage(msg);
-        if (msg.getAddress() == "/time") {
+        if (msg.getAddress() == "/shit/") {
+            timeReceived = msg.getArgAsFloat(0);
+        }
+        if (msg.getAddress() == "/dick/") {
             timeReceived = msg.getArgAsFloat(0);
         }
     }

@@ -5,7 +5,7 @@
 #include "ofxOpenCv.h"
 
 
-#define PORT 7331
+#define PORT 8000
 
 class ofApp : public ofBaseApp{
 

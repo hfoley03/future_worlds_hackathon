@@ -14,7 +14,7 @@ void ofApp::setup(){
 
     pollutionIncreasing = false;
     populationIncreasing = true;
-    extremePollution = true;
+    extremePollution = false;
     
 //    colorSpace.setHsb(0, 255, 0);
 //    colorIce.setHsb(0, 0, 255);
@@ -31,6 +31,11 @@ void ofApp::setup(){
     createLandmasses(); // only calling this in setup to save processing power, should be called everytime window is resized, not important for now
     createEarthVector();
     
+    std::cout << pollutionData[10] << std::endl;
+    
+    lastMinute = ofGetElapsedTimeMillis();
+
+    
 }
 
 //--------------------------------------------------------------
@@ -41,7 +46,15 @@ void ofApp::update(){
     centreW = ofGetWidth()/2;
     orbit1 = centreH*2;
     orbit2 = centreH*2;
-}
+    
+    now = ofGetElapsedTimeMillis();
+       if (now - lastMinute >= 500) { // 60000 milliseconds = 1 minute
+//           cout << "time interval" << endl;
+           cellure();
+           checkDataDirection();
+           currentYear += 1;
+           lastMinute = now;
+       }}
 
 //--------------------------------------------------------------
 void ofApp::draw(){
@@ -75,12 +88,13 @@ void ofApp::draw(){
     ofDrawBitmapStringHighlight("NYC", 505, 385);
     ofDrawBitmapStringHighlight("CDMX", 385, 479);
 
-    
-    ofDrawBitmapStringHighlight("Population: " + ofToString(populationLvl) , 50, 30);
-    ofDrawBitmapStringHighlight("Resources:  " + ofToString(resourcesLvl) , 50, 50);
-    ofDrawBitmapStringHighlight("Pollution:  " + ofToString(pollutionLvl) , 50, 70);
-    ofDrawBitmapStringHighlight("Industry:   " + ofToString(industryLvl) , 50, 90);
-    ofDrawBitmapStringHighlight("Food:       " + ofToString(foodLvl) , 50, 110);
+    ofDrawBitmapStringHighlight("Year:       " + ofToString(currentYear + startYear) , 50, 30);
+
+    ofDrawBitmapStringHighlight("Population: " + ofToString(populationData[currentYear]) , 50, 50);
+    ofDrawBitmapStringHighlight("Resources:  " + ofToString(resourceData[currentYear]) , 50, 70);
+    ofDrawBitmapStringHighlight("Pollution:  " + ofToString(pollutionData[currentYear]) , 50, 90);
+    ofDrawBitmapStringHighlight("Industry:   " + ofToString(industryData[currentYear]) , 50, 110);
+    ofDrawBitmapStringHighlight("Food:       " + ofToString(foodData[currentYear]) , 50, 130);
 
     //for debugging only
     ofDrawBitmapStringHighlight("Population Increasing: " + ofToString(populationIncreasing) , 700, 30);
@@ -99,6 +113,25 @@ void ofApp::draw(){
     
 
 
+
+}
+
+void ofApp::checkDataDirection(){
+    int nextYear = currentYear+1;
+    if(pollutionData[currentYear] < pollutionData[nextYear]){pollutionIncreasing = true;}
+    else {pollutionIncreasing = false;}
+    
+    if(populationData[currentYear] < populationData[nextYear]){populationIncreasing = true;}
+    else {populationIncreasing = false;}
+    
+    if(foodData[currentYear] < foodData[nextYear]){foodIncreasing = true;}
+    else {foodIncreasing = false;}
+    
+    if(industryData[currentYear] < industryData[nextYear]){industryIncreasing = true;}
+    else {industryIncreasing = false;}
+    
+    if(resourceData[currentYear] < resourceData[nextYear]){resourcesIncreasing = true;}
+    else {resourcesIncreasing = false;}
 
 }
 

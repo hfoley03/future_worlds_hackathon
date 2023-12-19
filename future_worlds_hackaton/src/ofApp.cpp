@@ -40,8 +40,7 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    sendOsc();
-    receiveOsc();
+
     centreH = ofGetHeight()/2;
     centreW = ofGetWidth()/2;
     orbit1 = centreH*2;
@@ -55,6 +54,8 @@ void ofApp::update(){
             checkDataDirection();
             currentYear += 1;
             lastMinute = now;
+            sendOsc();
+            receiveOsc();
         }
     }
 }
@@ -372,25 +373,42 @@ void ofApp::createEarthVector(){
 void ofApp::sendOsc(){
     timeSent = ofGetElapsedTimef();
     ofxOscMessage m1;
-    m1.setAddress("/dick/1");
-    m1.addFloatArg(0.333);
+    m1.setAddress("/pop");
 
-    oscOut.sendMessage(m1);
     
     ofxOscMessage m2;
-    m2.setAddress("/dick/2");
-    m2.addFloatArg(0.444);
+    m2.setAddress("/pul");
 
+    
+    ofxOscMessage m3;
+    m3.setAddress("/ind");
+
+    
+    if(currentYear < 2098){
+        m1.addFloatArg(populationData[currentYear]);
+        m2.addFloatArg(pollutionData[currentYear]);
+        m3.addFloatArg(industryData[currentYear]);
+    }
+    else {
+        m1.addFloatArg(0.0);
+        m2.addFloatArg(0.0);
+        m3.addFloatArg(0.0);
+    }
+    
+    oscOut.sendMessage(m3);
+    oscOut.sendMessage(m1);
     oscOut.sendMessage(m2);
 
+    
+    
 }
 
 void ofApp::receiveOsc(){
     while(oscIn.hasWaitingMessages()){
         ofxOscMessage msg;
         oscIn.getNextMessage(msg);
-        if (msg.getAddress() == "/dick") {
-            timeReceived = msg.getArgAsFloat(ofGetElapsedTimef());
+        if (msg.getAddress() == "/pop") {
+            timeReceived = msg.getArgAsFloat(0);
         }
 //        if (msg.getAddress() == "/dick") {
 //            timeReceived1 = msg.getArgAsFloat(0);

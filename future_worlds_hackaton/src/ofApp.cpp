@@ -40,11 +40,7 @@ void ofApp::draw(){
     drawEarthFromVCellTypesVector();
     
 
-    // Draw cities
-    ofSetColor(255, 0, 0, 255);
-    ofDrawRectangle(320, 395, 6, 6); //LA
-    ofDrawRectangle(495, 385, 6, 6); //NYC
-    ofDrawRectangle(375, 479, 6, 6); //Mexico, CDMX for short;
+    // Draw cities names
     ofSetRectMode(OF_RECTMODE_CORNER);
     ofSetColor(0, 0, 0, 255);
     ofDrawBitmapStringHighlight("LA", 330, 395);
@@ -72,6 +68,8 @@ void ofApp::drawEarthFromVCellTypesVector(){
             if (thisCellType == 1){ofSetColor(0, 255, 0, 150);}      //if land
             if (thisCellType == 2){ofSetColor(0, 0, 255, 150);}      //if ocean
             if (thisCellType == 3){ofSetColor(255, 255, 255, 150);}  //if ice
+            if (thisCellType == 4){ofSetColor(255, 0, 0, 255);}  //if city
+
 
             ofDrawRectangle( (j*5) + (250), (i*5) + (180), 10, 10); //looks cool with 10,10 and 150 alpha
 //             ofDrawRectangle( (j*5) + (250), (i*5) + (180), 4, 4); //looks cool with 10,10 and 150 alpha
@@ -168,6 +166,7 @@ void ofApp::createEarthVector(){
     //1 = land
     //2 = ocean
     //3 = ice cap
+    //4 = city
     
     int cellType = -1;
     
@@ -178,7 +177,6 @@ void ofApp::createEarthVector(){
             cellType = -1;
 
             if( ofDist(i+250,j+180,imgWidth/2 + offsetX , imgHeight/2 + offsetY) <= (imgWidth/2 - 10)){
-                ofSetColor(0, 0, 255, 200);
                 bool checkIfInside = false;
                 bool notFound = false;
                 int foundInLandmass = -1;
@@ -196,21 +194,16 @@ void ofApp::createEarthVector(){
                 
                 
                 if(notFound){ //ocean
-                    //ofSetColor(0, 0, 0, 50);
                     cellType = 2;
 
                 }
                 if(checkIfInside){ //land
-                    ofSetColor(0, 255, 0, 200);
                     cellType = 1;
                 }
                 if(foundInLandmass==1){ //icecap
-                    ofSetColor(255, 255, 255, 200);
                     cellType = 3;
 
                 }
-                ofDrawRectangle(i+250, j+180, 4, 4); //looks cool with 10,10 and 150 alpha
-
             }
             else
             {
@@ -222,14 +215,10 @@ void ofApp::createEarthVector(){
     }
     
     //insert cities here and set to 4
-//    ofDrawRectangle(320, 395, 6, 6); //LA
-//    ofDrawRectangle(495, 385, 6, 6); //NYC
-//    ofDrawRectangle(375, 479, 6, 6); //Mexico, CDMX for short;
-    
-    //LA = 320, 395         x = 320-250=70 /5 = 14   395-180=215 /5  43
-//    cellTypes[i*]
-    
-    
+    cellTypes[14*90 + 43] = 4;     //LA = 320, 395         x = 320-250=70 /5 = 14   395-180=215 /5  43
+    cellTypes[49*90 + 41] = 4;     //NYC = 495 385
+    cellTypes[25*90 + 60] = 4;     // MEX = 375, 479,
+
 }
 
 

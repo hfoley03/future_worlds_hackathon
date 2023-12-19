@@ -47,14 +47,17 @@ void ofApp::update(){
     orbit1 = centreH*2;
     orbit2 = centreH*2;
     
-    now = ofGetElapsedTimeMillis();
-       if (now - lastMinute >= 500) { // 60000 milliseconds = 1 minute
-//           cout << "time interval" << endl;
-           cellure();
-           checkDataDirection();
-           currentYear += 1;
-           lastMinute = now;
-       }}
+    if (currentYear < 200){
+        now = ofGetElapsedTimeMillis();
+        if (now - lastMinute >= 500) { // 60000 milliseconds = 1 minute
+            //           cout << "time interval" << endl;
+            cellure();
+            checkDataDirection();
+            currentYear += 1;
+            lastMinute = now;
+        }
+    }
+}
 
 //--------------------------------------------------------------
 void ofApp::draw(){
@@ -73,7 +76,7 @@ void ofApp::draw(){
     
     ofSetRectMode(OF_RECTMODE_CORNER);
 
-//    ofDrawBitmapStringHighlight("point " + ofToString(mouseX) + " " + ofToString(mouseY) , 50, 50);
+    ofDrawBitmapStringHighlight("point " + ofToString(mouseX) + " " + ofToString(mouseY) , 600, 600);
     ofSetColor(200, 200, 200);
 //    ofDrawCircle(imgWidth/2 + offsetX , imgHeight/2 + offsetY, imgWidth/2 - 10);
     
@@ -87,6 +90,9 @@ void ofApp::draw(){
     ofDrawBitmapStringHighlight("LA", 330, 395);
     ofDrawBitmapStringHighlight("NYC", 505, 385);
     ofDrawBitmapStringHighlight("CDMX", 385, 479);
+    ofDrawBitmapStringHighlight("BG", 480, 570);
+
+    
 
     ofDrawBitmapStringHighlight("Year:       " + ofToString(currentYear + startYear) , 50, 30);
 
@@ -103,9 +109,10 @@ void ofApp::draw(){
     ofDrawBitmapStringHighlight("Industry increasing:   " + ofToString(industryIncreasing) , 700, 90);
     ofDrawBitmapStringHighlight("Food incsreasing:       " + ofToString(foodIncreasing) ,700, 110);
     
-    ofDrawBitmapStringHighlight("time sent:       " + ofToString(timeSent) ,700, 200);
     ofDrawBitmapStringHighlight("dick rec:       " + ofToString(timeReceived) ,700, 220);
-    ofDrawBitmapStringHighlight("shit betwen:       " + ofToString(timeReceived) ,700, 250);
+    ofDrawBitmapStringHighlight("shit betwen:       " + ofToString(timeReceived1) ,700, 250);
+    ofDrawBitmapStringHighlight("city counter:       " + ofToString(cityCounter) ,700, 280);
+
 
     
 
@@ -118,10 +125,10 @@ void ofApp::draw(){
 
 void ofApp::checkDataDirection(){
     int nextYear = currentYear+1;
-    if(pollutionData[currentYear] < pollutionData[nextYear]){pollutionIncreasing = true;}
+    if(pollutionData[currentYear] < pollutionData[nextYear] && pollutionData[currentYear] > 0.1){pollutionIncreasing = true;}
     else {pollutionIncreasing = false;}
     
-    if(populationData[currentYear] < populationData[nextYear]){populationIncreasing = true;}
+    if(populationData[currentYear] < populationData[nextYear]  && populationData[currentYear] > 0.1){populationIncreasing = true;}
     else {populationIncreasing = false;}
     
     if(foodData[currentYear] < foodData[nextYear]){foodIncreasing = true;}
@@ -132,6 +139,9 @@ void ofApp::checkDataDirection(){
     
     if(resourceData[currentYear] < resourceData[nextYear]){resourcesIncreasing = true;}
     else {resourcesIncreasing = false;}
+    
+    if(pollutionData[currentYear]>0.5){extremePollution = true;}
+    else {extremePollution = false;}
 
 }
 
@@ -154,7 +164,7 @@ void ofApp::drawEarthFromVCellTypesVector(){
                 
             }      //if ocean
             if (thisCellType == 3){ofSetColor(255, 255, 255, 150);}  //if ice
-            if (thisCellType == 4){ofSetColor(255, 0, 0, 255);}  //if city
+            if (thisCellType == 4){ofSetColor(105,103,97, 150);}  //if city
 
             //fix later
 //            if (thisCellType == 0){ofSetColor(colorSpace);}        //if space
@@ -174,6 +184,7 @@ void ofApp::drawEarthFromVCellTypesVector(){
 
 void ofApp::cellure(){ //we'll call this once a year
     
+    cityCounter = 0;
     //behaves similar to game of life
     //for each world cell
     //check if the surrounding neighbours meet some condintions then change cell type
@@ -186,6 +197,8 @@ void ofApp::cellure(){ //we'll call this once a year
                 int neighboursCity = 0;
                 int neighboursOcean = 0;
                 int neighboursLand = 0;
+                
+                if (cellTypes[j*90 + i]==4){cityCounter++;}
                 
                 // iterate around the surrounding cells
                 for(int xx = -1; xx <= 1; xx = xx + 1){
@@ -237,6 +250,9 @@ void ofApp::cellure(){ //we'll call this once a year
     cellTypes[14*90 + 43] = 4;     //LA = 320, 395
     cellTypes[49*90 + 41] = 4;     //NYC = 495 385
     cellTypes[25*90 + 60] = 4;     // MEX = 375, 479
+    cellTypes[44*90 + 76] = 4;     // bog = 470, 650
+
+    
     
 }
 
@@ -356,15 +372,15 @@ void ofApp::createEarthVector(){
 void ofApp::sendOsc(){
     timeSent = ofGetElapsedTimef();
     ofxOscMessage m1;
-    m1.setAddress("/dick/");
-    m1.addFloatArg(timeSent);
+    m1.setAddress("/dick/1");
+    m1.addFloatArg(0.333);
 
     oscOut.sendMessage(m1);
     
     ofxOscMessage m2;
-    m2.setAddress("/shit/");
-    m2.addFloatArg(timeSent + 100);
-    
+    m2.setAddress("/dick/2");
+    m2.addFloatArg(0.444);
+
     oscOut.sendMessage(m2);
 
 }
@@ -373,12 +389,12 @@ void ofApp::receiveOsc(){
     while(oscIn.hasWaitingMessages()){
         ofxOscMessage msg;
         oscIn.getNextMessage(msg);
-        if (msg.getAddress() == "/shit/") {
-            timeReceived = msg.getArgAsFloat(0);
+        if (msg.getAddress() == "/dick") {
+            timeReceived = msg.getArgAsFloat(ofGetElapsedTimef());
         }
-        if (msg.getAddress() == "/dick/") {
-            timeReceived = msg.getArgAsFloat(0);
-        }
+//        if (msg.getAddress() == "/dick") {
+//            timeReceived1 = msg.getArgAsFloat(0);
+//        }
     }
 }
 

@@ -69,6 +69,19 @@ class ofApp : public ofBaseApp{
     int offsetX; //used to reposition
     int offsetY;
     
+    vector<int> cellTypes;
+    
+    void createEarthVector();
+    
+    void drawEarthFromVCellTypesVector();
 
+    void oldDrawEarth();
+    
+    int iceCell(int i, int j);
+    
+    void cellure();
+    
+    bool pollutionIncreasing;
+    
 		
 };

@@ -81,7 +81,11 @@ class ofApp : public ofBaseApp{
     
     void cellure();
     
-    bool pollutionIncreasing;
+    bool pollutionIncreasing;   //controls icecaps
+    bool populationIncreasing;  //controls cities
+    bool foodIncreasing;        //controls vegitation 
+    bool extremePollution;      //controls sea lvl
+    
     
 		
 };

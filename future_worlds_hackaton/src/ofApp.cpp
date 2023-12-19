@@ -8,6 +8,8 @@ void ofApp::setup(){
     endYear = 2100;
     
     pollutionIncreasing = false;
+    populationIncreasing = true;
+    extremePollution = true;
     
     ofBackground(0);
     ofSetCircleResolution(100);
@@ -39,7 +41,6 @@ void ofApp::draw(){
     
     drawEarthFromVCellTypesVector();
     
-
     // Draw cities names
     ofSetRectMode(OF_RECTMODE_CORNER);
     ofSetColor(0, 0, 0, 255);
@@ -87,26 +88,62 @@ void ofApp::cellure(){ //we'll call this once a year
         for(int j = 0; j< 90; j = j + 1)
         {
             if(cellTypes[j*90 + i] > 0){ //if its not space we care about it
-                int neighbours = 0;
+                int neighboursIce = 0;
+                int neighboursCity = 0;
+                int neighboursOcean = 0;
+                int neighboursLand = 0;
+                
                 // iterate around the surrounding cells
                 for(int xx = -1; xx <= 1; xx = xx + 1){
                     for(int yy = -90; yy <= 90; yy = yy + 90){
 
                         int thisType = cellTypes[j*90 + i + xx + yy]; // get the type of the neighbour cell
 //                        std::cout << j*90 + i + xx + yy << std::endl;
+                        
+                        //types of cells
+                        //0 = space
+                        //1 = land
+                        //2 = ocean
+                        //3 = ice cap
+                        //4 = city
 
+                        if (thisType == 1){ //land
+                            if ((j*90 + i + xx + yy) != (j*90 + i)){neighboursLand += 1;}
+                        }
+                        if (thisType == 2){ //ocean
+                            if ((j*90 + i + xx + yy) != (j*90 + i)){neighboursOcean += 1;}
+                        }
                         if (thisType == 3){ //ice
-                            if ((j*90 + i + xx + yy) != (j*90 + i)){neighbours += 1;}
+                            if ((j*90 + i + xx + yy) != (j*90 + i)){neighboursIce += 1;}
+                        }
+                        if (thisType == 4){ //city
+                            if ((j*90 + i + xx + yy) != (j*90 + i)){neighboursCity += 1;}
                         }
                     }
                 }
-                if(neighbours == 3 && ofRandom(1.0) > 0.5){ //if ive exactly 3 neighbours of ice and then some probability thing
-                    if(pollutionIncreasing){cellTypes[j*90 + i] = 2;} //if I have 3 or more ice neighbours I am now ice;}
+                if(neighboursIce == 3 && ofRandom(1.0) > 0.5){ //if ive exactly 3 neighbours of ice and then some probability thing
+                    if(pollutionIncreasing){cellTypes[j*90 + i] = 2;}
                     else {cellTypes[j*90 + i] = 3;}
                 }
+                
+                if(neighboursCity == 1 && ofRandom(1.0) > 0.95 && cellTypes[j*90 + i] != 2){ //if ive exactly 1 neighbours of city and then some probability thing
+                    if(populationIncreasing){cellTypes[j*90 + i] = 4;}
+                    else {cellTypes[j*90 + i] = 1;}
+                }
+                
+                if(neighboursOcean == 3 && ofRandom(1.0) > 0.95 && cellTypes[j*90 + i] == 1){ //if ive exactly 1 neighbours of city and then some probability thing
+                    if(extremePollution){cellTypes[j*90 + i] = 2;}
+                    else {cellTypes[j*90 + i] = 1;}
+                }
+                
             }
         }
     }
+    //To stop cities being able to completely disapeer
+    cellTypes[14*90 + 43] = 4;     //LA = 320, 395
+    cellTypes[49*90 + 41] = 4;     //NYC = 495 385
+    cellTypes[25*90 + 60] = 4;     // MEX = 375, 479
+    
 }
 
 //                 LOGIC OF NEIGHBOURING CELLS
@@ -255,6 +292,10 @@ void ofApp::keyPressed(int key){
         case 'p':
             pollutionIncreasing = !pollutionIncreasing;
             std::cout << "pollution state flipped" << std::endl;
+            break;
+        case 'o':
+            populationIncreasing = !populationIncreasing;
+            std::cout << "population state flipped" << std::endl;
             break;
     }
 }

@@ -6,7 +6,12 @@ void ofApp::setup(){
     centreW = ofGetWidth()/2;
     startYear = 1900;
     endYear = 2100;
-    
+    orbitAng1 = 0.1;
+    orbitAng2 = 0.1;
+
+    orbit1 = centreH*2;
+    orbit2 = centreH*2;
+
     pollutionIncreasing = false;
     populationIncreasing = true;
     extremePollution = true;
@@ -32,19 +37,35 @@ void ofApp::setup(){
 void ofApp::update(){
     //    sendOsc();
     //    receiveOsc();
+    centreH = ofGetHeight()/2;
+    centreW = ofGetWidth()/2;
+    orbit1 = centreH*2;
+    orbit2 = centreH*2;
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+
+    
+    //PLANETS
+    orbitAng1 = ofGetElapsedTimef()*0.2;
+    orbitAng2 = ofGetElapsedTimef()*0.1;
+
+    //Mars
+    ofSetColor(231,125,17, 200);
+    ofDrawEllipse(orbit1*cos(orbitAng1) + centreW, orbit1*sin(orbitAng1) + centreH*2.5, 50, 50);
+    //Some other planet
+    ofSetColor(79,76,176, 200);
+    ofDrawEllipse(orbit2*cos(orbitAng2) + centreW, orbit2*sin(orbitAng2) + centreH*2.75, 30, 30);
+    
     ofSetRectMode(OF_RECTMODE_CORNER);
-//    centreH = ofGetHeight()/2;
-//    centreW = ofGetWidth()/2;
+
 //    ofDrawBitmapStringHighlight("point " + ofToString(mouseX) + " " + ofToString(mouseY) , 50, 50);
-//    ofDrawBitmapStringHighlight(ofToString(ofGetWidth()) + " " + ofToString(ofGetHeight()) , 50, 70);
     ofSetColor(200, 200, 200);
 //    ofDrawCircle(imgWidth/2 + offsetX , imgHeight/2 + offsetY, imgWidth/2 - 10);
-    ofSetColor(0, 0, 0, 255);
     
+    ofSetColor(0, 0, 0, 255);
+    // EARTH
     drawEarthFromVCellTypesVector();
     
     // Draw cities names
@@ -83,7 +104,7 @@ void ofApp::drawEarthFromVCellTypesVector(){
         for(int j = 0; j< 90; j = j + 1)
         {
             int thisCellType = cellTypes[j*90 + i];
-            if (thisCellType == 0){ofSetColor(0, 0, 0);}        //if space
+//            if (thisCellType == 0){ofSetColor(0, 0, 0);}        //if space
             if (thisCellType == 1){ofSetColor(98,188,47, 200);}      //if land
             if (thisCellType == 2)
             {
@@ -100,9 +121,12 @@ void ofApp::drawEarthFromVCellTypesVector(){
 //            if (thisCellType == 2){ofSetColor(colorOcean);}      //if ocean
 //            if (thisCellType == 3){ofSetColor(colorIce);}  //if ice
 //            if (thisCellType == 4){ofSetColor(colorCity);}  //if city
+           
+            if (thisCellType != 0){
+                ofDrawRectangle( (j*5) + (250), (i*5) + (180), 10, 10); //looks cool with 10,10 and 150 alpha
+    //             ofDrawRectangle( (j*5) + (250), (i*5) + (180), 4, 4); //looks cool with 10,10 and 150 alpha
+            }        //if space
 
-            ofDrawRectangle( (j*5) + (250), (i*5) + (180), 10, 10); //looks cool with 10,10 and 150 alpha
-//             ofDrawRectangle( (j*5) + (250), (i*5) + (180), 4, 4); //looks cool with 10,10 and 150 alpha
         }
     }
 }

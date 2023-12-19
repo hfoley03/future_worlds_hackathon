@@ -101,6 +101,12 @@ class ofApp : public ofBaseApp{
     float resourcesLvl =0.55;
     float foodLvl =0.45;
     float industryLvl =0.24;
+    
+    float orbit1;
+    float orbit2;
+    float orbitAng1;
+    float orbitAng2;
+
 
 
     

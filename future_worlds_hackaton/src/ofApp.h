@@ -43,15 +43,17 @@ class ofApp : public ofBaseApp{
     
     ofImage worldIcon;
     
-    ofxCvColorImage            colorImg;
+    ofxCvColorImage         colorImg;
     ofxCvGrayscaleImage     grayImage;
     ofxCvGrayscaleImage     grayBg;
     ofxCvGrayscaleImage     grayDiff;
-    ofxCvContourFinder        contourFinder;
+    ofxCvContourFinder      contourFinder;
 
     int                        thresholdValue;
     float thresh;
     bool                    bLearnBackground;
+    
+
     
     int imgWidth;
     int imgHeight;
@@ -85,7 +87,22 @@ class ofApp : public ofBaseApp{
     bool populationIncreasing;  //controls cities
     bool foodIncreasing;        //controls vegitation 
     bool extremePollution;      //controls sea lvl
+    bool industryIncreasing;    //
+    bool resourcesIncreasing;
     
+    ofColor colorSpace;
+    ofColor colorLand;
+    ofColor colorOcean;
+    ofColor colorIce;
+    ofColor colorCity;
+    
+    float populationLvl =0.33;
+    float pollutionLvl =0.33;
+    float resourcesLvl =0.55;
+    float foodLvl =0.45;
+    float industryLvl =0.24;
+
+
     
 		
 };

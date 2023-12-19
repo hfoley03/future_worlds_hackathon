@@ -11,6 +11,12 @@ void ofApp::setup(){
     populationIncreasing = true;
     extremePollution = true;
     
+//    colorSpace.setHsb(0, 255, 0);
+//    colorIce.setHsb(0, 0, 255);
+//    colorCity.setHsb(255, 255, 255);
+//    colorLand.setHsb(100,200,255);
+//    colorOcean.setHsb(180,200,255);
+    
     ofBackground(0);
     ofSetCircleResolution(100);
     oscOut.setup("localhost", 7331);    //OSC
@@ -33,8 +39,8 @@ void ofApp::draw(){
     ofSetRectMode(OF_RECTMODE_CORNER);
 //    centreH = ofGetHeight()/2;
 //    centreW = ofGetWidth()/2;
-    ofDrawBitmapStringHighlight("point " + ofToString(mouseX) + " " + ofToString(mouseY) , 50, 50);
-    ofDrawBitmapStringHighlight(ofToString(ofGetWidth()) + " " + ofToString(ofGetHeight()) , 50, 70);
+//    ofDrawBitmapStringHighlight("point " + ofToString(mouseX) + " " + ofToString(mouseY) , 50, 50);
+//    ofDrawBitmapStringHighlight(ofToString(ofGetWidth()) + " " + ofToString(ofGetHeight()) , 50, 70);
     ofSetColor(200, 200, 200);
 //    ofDrawCircle(imgWidth/2 + offsetX , imgHeight/2 + offsetY, imgWidth/2 - 10);
     ofSetColor(0, 0, 0, 255);
@@ -49,7 +55,19 @@ void ofApp::draw(){
     ofDrawBitmapStringHighlight("CDMX", 385, 479);
 
     
+    ofDrawBitmapStringHighlight("Population: " + ofToString(populationLvl) , 50, 30);
+    ofDrawBitmapStringHighlight("Resources:  " + ofToString(resourcesLvl) , 50, 50);
+    ofDrawBitmapStringHighlight("Pollution:  " + ofToString(pollutionLvl) , 50, 70);
+    ofDrawBitmapStringHighlight("Industry:   " + ofToString(industryLvl) , 50, 90);
+    ofDrawBitmapStringHighlight("Food:       " + ofToString(foodLvl) , 50, 110);
 
+    //for debugging only
+    ofDrawBitmapStringHighlight("Population Increasing: " + ofToString(populationIncreasing) , 700, 30);
+    ofDrawBitmapStringHighlight("Resources increasing:  " + ofToString(resourcesIncreasing) , 700, 50);
+    ofDrawBitmapStringHighlight("Pollution increasing:  " + ofToString(pollutionIncreasing) , 700, 70);
+    ofDrawBitmapStringHighlight("Industry increasing:   " + ofToString(industryIncreasing) , 700, 90);
+    ofDrawBitmapStringHighlight("Food incsreasing:       " + ofToString(foodIncreasing) ,700, 110);
+    
 
 
 
@@ -66,11 +84,22 @@ void ofApp::drawEarthFromVCellTypesVector(){
         {
             int thisCellType = cellTypes[j*90 + i];
             if (thisCellType == 0){ofSetColor(0, 0, 0);}        //if space
-            if (thisCellType == 1){ofSetColor(0, 255, 0, 150);}      //if land
-            if (thisCellType == 2){ofSetColor(0, 0, 255, 150);}      //if ocean
+            if (thisCellType == 1){ofSetColor(98,188,47, 200);}      //if land
+            if (thisCellType == 2)
+            {
+                if(i%2 ==0){ofSetColor(0, 120, 255, 150);}
+                else {ofSetColor(0, 131, 255, 150);}
+                
+            }      //if ocean
             if (thisCellType == 3){ofSetColor(255, 255, 255, 150);}  //if ice
             if (thisCellType == 4){ofSetColor(255, 0, 0, 255);}  //if city
 
+            //fix later
+//            if (thisCellType == 0){ofSetColor(colorSpace);}        //if space
+//            if (thisCellType == 1){ofSetColor(colorLand);}      //if land
+//            if (thisCellType == 2){ofSetColor(colorOcean);}      //if ocean
+//            if (thisCellType == 3){ofSetColor(colorIce);}  //if ice
+//            if (thisCellType == 4){ofSetColor(colorCity);}  //if city
 
             ofDrawRectangle( (j*5) + (250), (i*5) + (180), 10, 10); //looks cool with 10,10 and 150 alpha
 //             ofDrawRectangle( (j*5) + (250), (i*5) + (180), 4, 4); //looks cool with 10,10 and 150 alpha
@@ -291,6 +320,8 @@ void ofApp::keyPressed(int key){
             break;
         case 'p':
             pollutionIncreasing = !pollutionIncreasing;
+            extremePollution = !extremePollution;
+
             std::cout << "pollution state flipped" << std::endl;
             break;
         case 'o':

@@ -14,8 +14,8 @@
             filePath = "src/ofApp.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "500"
-            endingLineNumber = "500"
+            startingLineNumber = "622"
+            endingLineNumber = "622"
             landmarkName = "ofApp::oldDrawEarth()"
             landmarkType = "7">
          </BreakpointContent>

@@ -67,6 +67,10 @@ class ofApp : public ofBaseApp{
     int startYear;
     int endYear;
     int currentYear;
+    bool start = false;
+    
+    ofTrueTypeFont myfont;
+
     
     float lastMinute;
     unsigned long now;
@@ -80,6 +84,8 @@ class ofApp : public ofBaseApp{
     void createEarthVector();
     
     void drawEarthFromVCellTypesVector();
+    
+    void drawEarthFromVCellTypesVectorWobble();
 
     void oldDrawEarth();
     
@@ -89,6 +95,8 @@ class ofApp : public ofBaseApp{
     
     void cellure();
     
+    bool animate = true;
+    
     bool pollutionIncreasing;   //controls icecaps
     bool populationIncreasing;  //controls cities
     bool foodIncreasing;        //controls vegitation 
@@ -96,8 +104,15 @@ class ofApp : public ofBaseApp{
     bool industryIncreasing;    //
     bool resourcesIncreasing;
     
+    int maxPopYear;
+    int maxPulYear;
+    int maxFoodYear;
+    int maxIndYear;
+    
     int cityCounter = 4;
     int maxNumberCity = 200;
+    int iceCounter = 1;
+    int maxNumberIce = 30;
     
     ofColor colorSpace;
     ofColor colorLand;

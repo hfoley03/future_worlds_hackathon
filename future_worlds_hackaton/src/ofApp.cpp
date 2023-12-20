@@ -9,6 +9,9 @@ void ofApp::setup(){
     orbitAng1 = 0.1;
     orbitAng2 = 0.1;
 
+//    myfont.load("LEDLIGHT.otf", 60);
+    myfont.load("nasalization-rg.otf", 32);
+    
     orbit1 = centreH*2;
     orbit2 = centreH*2;
 
@@ -35,6 +38,13 @@ void ofApp::setup(){
     
     lastMinute = ofGetElapsedTimeMillis();
 
+    maxPopYear = distance(populationData, max_element(populationData, populationData + 200));
+    maxPulYear = distance(pollutionData, max_element(pollutionData, pollutionData + 200));
+    maxIndYear = distance(industryData, max_element(industryData, industryData + 200));
+//    maxPopYear = distance(populationData, max_element(populationData, populationData + 200));
+
+
+    std::cout << maxPopYear << std::endl;
     
 }
 
@@ -46,7 +56,7 @@ void ofApp::update(){
     orbit1 = centreH*2;
     orbit2 = centreH*2;
     
-    if (currentYear < 200){
+    if (currentYear < 199 && start){
         now = ofGetElapsedTimeMillis();
         if (now - lastMinute >= 500) { // 60000 milliseconds = 1 minute
             //           cout << "time interval" << endl;
@@ -63,57 +73,117 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 
-    
+    myfont.drawString("Future Worlds", ofGetWidth()/2 - myfont.stringWidth("Future Wolrds")/2 - 25, 100);
+
     //PLANETS
     orbitAng1 = ofGetElapsedTimef()*0.2;
     orbitAng2 = ofGetElapsedTimef()*0.1;
 
     //Mars
-    ofSetColor(231,125,17, 200);
+    ofSetColor(231,125,17, 160);
     ofDrawEllipse(orbit1*cos(orbitAng1) + centreW, orbit1*sin(orbitAng1) + centreH*2.5, 50, 50);
+//    ofSetColor(255,0,0, 200);
+//    ofSetRectMode(OF_RECTMODE_CENTER);
+//    ofDrawRectangle(orbit1*cos(orbitAng1) + centreW, orbit1*sin(orbitAng1) + centreH*2.5, 5, 5);
+//    ofDrawRectangle(orbit1*cos(orbitAng1) + centreW + 5, orbit1*sin(orbitAng1) + centreH*2.5 + 5, 5, 5);
+//    ofDrawRectangle(orbit1*cos(orbitAng1) + centreW + 5, orbit1*sin(orbitAng1) + centreH*2.5 - 5, 5, 5);
+//    ofDrawRectangle(orbit1*cos(orbitAng1) + centreW - 5, orbit1*sin(orbitAng1) + centreH*2.5 + 5, 5, 5);
+//    ofDrawRectangle(orbit1*cos(orbitAng1) + centreW - 5, orbit1*sin(orbitAng1) + centreH*2.5 - 5, 5, 5);
+
+
+
+    
     //Some other planet
     ofSetColor(79,76,176, 200);
     ofDrawEllipse(orbit2*cos(orbitAng2) + centreW, orbit2*sin(orbitAng2) + centreH*2.75, 30, 30);
     
     ofSetRectMode(OF_RECTMODE_CORNER);
+    ofFill();
+    ofSetColor(255, 255, 255);
+//    ofDrawEllipse(ofGetWidth() - 300 , ofGetHeight() - 50 , 50, 50);
+    ofDrawLine(centreW - 300 , ofGetHeight() - 50 , centreW + 300 , ofGetHeight() - 50);
+    ofDrawLine(centreW - 300 , ofGetHeight() - 50 + 5 , centreW - 300 , ofGetHeight() - 50 - 5);
+    ofDrawLine(centreW + 300 , ofGetHeight() - 50 + 5 , centreW + 300 , ofGetHeight() - 50 - 5);
+    
+    ofDrawEllipse(centreW - 300 + (currentYear * 3), ofGetHeight() - 50, 10,10); // cursror
+    
+    ofDrawBitmapStringHighlight(ofToString(currentYear + startYear) , centreW - 315 + (currentYear * 3), ofGetHeight() - 28);
 
-    ofDrawBitmapStringHighlight("point " + ofToString(mouseX) + " " + ofToString(mouseY) , 600, 600);
+    
+    ofDrawBitmapStringHighlight("1900", centreW - 300 , ofGetHeight() - 70);
+    ofDrawBitmapStringHighlight("2100", centreW + 270 , ofGetHeight() - 70);
+    
+    ofSetColor(255, 0, 0);
+    ofDrawEllipse(centreW - 300 + (maxPopYear * 3), ofGetHeight() - 50, 5,5);
+    ofSetColor(0, 255, 0);
+    ofDrawEllipse(centreW - 300 + (maxPulYear * 3), ofGetHeight() - 50, 5,5);
+    ofSetColor(255, 255, 0);
+    ofDrawEllipse(centreW - 300 + (maxIndYear * 3), ofGetHeight() - 50, 5,5);
+
+
+
+
+
+
+//    ofDrawBitmapStringHighlight("point " + ofToString(mouseX) + " " + ofToString(mouseY) , 600, 600);
     ofSetColor(200, 200, 200);
 //    ofDrawCircle(imgWidth/2 + offsetX , imgHeight/2 + offsetY, imgWidth/2 - 10);
     
     ofSetColor(0, 0, 0, 255);
     // EARTH
-    drawEarthFromVCellTypesVector();
+//    drawEarthFromVCellTypesVector();
+//    drawEarthFromVCellTypesVectorWobble();
+    
+    if(animate){
+        drawEarthFromVCellTypesVectorWobble();
+    }
+    else {
+        drawEarthFromVCellTypesVector();
+    }
     
     // Draw cities names
-    ofSetRectMode(OF_RECTMODE_CORNER);
-    ofSetColor(0, 0, 0, 255);
-    ofDrawBitmapStringHighlight("LA", 330, 395);
-    ofDrawBitmapStringHighlight("NYC", 505, 385);
-    ofDrawBitmapStringHighlight("CDMX", 385, 479);
-    ofDrawBitmapStringHighlight("BG", 480, 570);
+//    ofSetRectMode(OF_RECTMODE_CORNER);
+//    ofSetColor(0, 0, 0, 255);
+//    ofDrawBitmapStringHighlight("LA", 330, 395);
+//    ofDrawBitmapStringHighlight("NYC", 505, 385);
+//    ofDrawBitmapStringHighlight("CDMX", 385, 479);
+//    ofDrawBitmapStringHighlight("BG", 480, 570);
+    
+    
+//    (j*5)*cos(orbitAng1) + (250) +centreW/2
+
+    ofSetColor(255, 0, 0, 255);
 
     
+//    ofDrawBitmapStringHighlight("Year:       " + ofToString(currentYear + startYear) , 50, 30);
 
-    ofDrawBitmapStringHighlight("Year:       " + ofToString(currentYear + startYear) , 50, 30);
-
-    ofDrawBitmapStringHighlight("Population: " + ofToString(populationData[currentYear]) , 50, 50);
-    ofDrawBitmapStringHighlight("Resources:  " + ofToString(resourceData[currentYear]) , 50, 70);
-    ofDrawBitmapStringHighlight("Pollution:  " + ofToString(pollutionData[currentYear]) , 50, 90);
-    ofDrawBitmapStringHighlight("Industry:   " + ofToString(industryData[currentYear]) , 50, 110);
-    ofDrawBitmapStringHighlight("Food:       " + ofToString(foodData[currentYear]) , 50, 130);
+    ofDrawBitmapStringHighlight("Population: " + ofToString(populationData[currentYear], 3) , 50, 50);
+    ofDrawBitmapStringHighlight("Resources:  " + ofToString(resourceData[currentYear], 3) , 50, 70);
+    ofDrawBitmapStringHighlight("Pollution:  " + ofToString(pollutionData[currentYear], 3) , 50, 90);
+    ofDrawBitmapStringHighlight("Industry:   " + ofToString(industryData[currentYear], 3) , 50, 110);
+    ofDrawBitmapStringHighlight("Food:       " + ofToString(foodData[currentYear], 3) , 50, 130);
+    
+    ofSetColor(255, 0, 0);
+    ofDrawEllipse(40, 45, 5,5);
+    ofSetColor(0, 255, 0);
+    ofDrawEllipse(40, 85, 5,5);
+    ofSetColor(255, 255, 0);
+    ofDrawEllipse(40, 105, 5,5);
 
     //for debugging only
-    ofDrawBitmapStringHighlight("Population Increasing: " + ofToString(populationIncreasing) , 700, 30);
-    ofDrawBitmapStringHighlight("Resources increasing:  " + ofToString(resourcesIncreasing) , 700, 50);
-    ofDrawBitmapStringHighlight("Pollution increasing:  " + ofToString(pollutionIncreasing) , 700, 70);
-    ofDrawBitmapStringHighlight("Industry increasing:   " + ofToString(industryIncreasing) , 700, 90);
-    ofDrawBitmapStringHighlight("Food incsreasing:       " + ofToString(foodIncreasing) ,700, 110);
-    
-    ofDrawBitmapStringHighlight("dick rec:       " + ofToString(timeReceived) ,700, 220);
-    ofDrawBitmapStringHighlight("shit betwen:       " + ofToString(timeReceived1) ,700, 250);
-    ofDrawBitmapStringHighlight("city counter:       " + ofToString(cityCounter) ,700, 280);
-
+//    ofDrawBitmapStringHighlight("Population Increasing: " + ofToString(populationIncreasing) , 700, 30);
+//    ofDrawBitmapStringHighlight("Resources increasing:  " + ofToString(resourcesIncreasing) , 700, 50);
+//    ofDrawBitmapStringHighlight("Pollution increasing:  " + ofToString(pollutionIncreasing) , 700, 70);
+//    ofDrawBitmapStringHighlight("Industry increasing:   " + ofToString(industryIncreasing) , 700, 90);
+//    ofDrawBitmapStringHighlight("extremePollution :       " + ofToString(extremePollution) ,700, 110);
+//
+//
+//    ofDrawBitmapStringHighlight("city counter:       " + ofToString(cityCounter) ,700, 280);
+//    ofDrawBitmapStringHighlight("ice counter:       " + ofToString(iceCounter) ,700, 300);
+//    ofSetRectMode(OF_RECTMODE_CENTER);
+//
+//    ofSetColor(255, 255, 255);
+//    grayImage.draw(centreW,centreH);
 
     
 
@@ -156,8 +226,7 @@ void ofApp::drawEarthFromVCellTypesVector(){
         for(int j = 0; j< 90; j = j + 1)
         {
             int thisCellType = cellTypes[j*90 + i];
-//            if (thisCellType == 0){ofSetColor(0, 0, 0);}        //if space
-            if (thisCellType == 1){ofSetColor(98,188,47, 200);}      //if land
+            if (thisCellType == 1){ofSetColor(98,188,47, 150);}      //if land
             if (thisCellType == 2)
             {
                 if(i%2 ==0){ofSetColor(0, 120, 255, 150);}
@@ -165,27 +234,62 @@ void ofApp::drawEarthFromVCellTypesVector(){
                 
             }      //if ocean
             if (thisCellType == 3){ofSetColor(255, 255, 255, 150);}  //if ice
-            if (thisCellType == 4){ofSetColor(105,103,97, 150);}  //if city
+            if (thisCellType == 4){ofSetColor(105,103,97, 255);}  //if city
 
-            //fix later
-//            if (thisCellType == 0){ofSetColor(colorSpace);}        //if space
-//            if (thisCellType == 1){ofSetColor(colorLand);}      //if land
-//            if (thisCellType == 2){ofSetColor(colorOcean);}      //if ocean
-//            if (thisCellType == 3){ofSetColor(colorIce);}  //if ice
-//            if (thisCellType == 4){ofSetColor(colorCity);}  //if city
-           
+
             if (thisCellType != 0){
-                ofDrawRectangle( (j*5) + (250), (i*5) + (180), 10, 10); //looks cool with 10,10 and 150 alpha
-    //             ofDrawRectangle( (j*5) + (250), (i*5) + (180), 4, 4); //looks cool with 10,10 and 150 alpha
-            }        //if space
+//                ofDrawRectangle( (j*5) + (250), (i*5) + (180), 10, 10); //looks cool with 10,10 and 150 alpha
+//                 ofDrawRectangle( (j*5) + (250), (i*5) + (180), 5, 5); //looks cool with 10,10 and 150 alpha
+                ofDrawEllipse( (j*5) + (250), (i*5) + (180), 10, 10); //looks cool with 10,10 and 150 alpha
 
+            }        //if space
         }
     }
+    ofSetRectMode(OF_RECTMODE_CORNER);
+    ofSetColor(0, 0, 0, 255);
+    ofDrawBitmapStringHighlight("LA", 330, 395);
+    ofDrawBitmapStringHighlight("NYC", 505, 385);
+    ofDrawBitmapStringHighlight("CDMX", 385, 479);
+    ofDrawBitmapStringHighlight("BG", 480, 570);
+}
+
+void ofApp::drawEarthFromVCellTypesVectorWobble(){
+    
+    ofSetRectMode(OF_RECTMODE_CENTER);
+    ofSetColor(255, 0, 0, 255);
+
+    for(int i = 0; i < 90; i = i + 1)
+    {
+        for(int j = 0; j< 90; j = j + 1)
+        {
+            int thisCellType = cellTypes[j*90 + i];
+            if (thisCellType == 1){ofSetColor(98,188,47, 150);}      //if land
+            if (thisCellType == 2)
+            {
+                if(i%2 ==0){ofSetColor(0, 120, 255, 150);}
+                else {ofSetColor(0, 131, 255, 150);}
+                
+            }      //if ocean
+            if (thisCellType == 3){ofSetColor(255, 255, 255, 150);}  //if ice
+            if (thisCellType == 4){ofSetColor(105,103,97, 255);}  //if city
+
+
+            if (thisCellType != 0){
+//                ofDrawRectangle( (j*5) + (250), (i*5) + (180), 10, 10); //looks cool with 10,10 and 150 alpha
+//                 ofDrawRectangle( (j*5) + (250), (i*5) + (180), 5, 5); //looks cool with 10,10 and 150 alpha
+                ofDrawEllipse( (j*5)*cos(orbitAng1) + (250) +centreW/2, (i*5) + (180), 10, 10); //looks cool with 10,10 and 150 alpha
+
+            }        //if space
+        }
+    }
+    ofSetRectMode(OF_RECTMODE_CORNER);
+
 }
 
 void ofApp::cellure(){ //we'll call this once a year
     
     cityCounter = 0;
+    int iceCounterTemp = 0;
     //behaves similar to game of life
     //for each world cell
     //check if the surrounding neighbours meet some condintions then change cell type
@@ -200,6 +304,8 @@ void ofApp::cellure(){ //we'll call this once a year
                 int neighboursLand = 0;
                 
                 if (cellTypes[j*90 + i]==4){cityCounter++;}
+                if (cellTypes[j*90 + i]==3){iceCounterTemp++;}
+
                 
                 // iterate around the surrounding cells
                 for(int xx = -1; xx <= 1; xx = xx + 1){
@@ -229,7 +335,7 @@ void ofApp::cellure(){ //we'll call this once a year
                         }
                     }
                 }
-                if(neighboursIce == 3 && ofRandom(1.0) > 0.5){ //if ive exactly 3 neighbours of ice and then some probability thing
+                if(neighboursIce == 3 && ofRandom(1.0) > 0.5  && (iceCounter < 200 || currentYear > 90) ){ //if ive exactly 3 neighbours of ice and then some probability thing
                     if(pollutionIncreasing){cellTypes[j*90 + i] = 2;}
                     else {cellTypes[j*90 + i] = 3;}
                 }
@@ -239,9 +345,14 @@ void ofApp::cellure(){ //we'll call this once a year
                     else {cellTypes[j*90 + i] = 1;}
                 }
                 
-                if(neighboursOcean == 3 && ofRandom(1.0) > 0.95 && cellTypes[j*90 + i] == 1){ //if ive exactly 1 neighbours of city and then some probability thing
+                if(neighboursOcean == 3 && ofRandom(1.0) > 0.85 && cellTypes[j*90 + i] == 1){ //if ive exactly 1 neighbours of city and then some probability thing
                     if(extremePollution){cellTypes[j*90 + i] = 2;}
                     else {cellTypes[j*90 + i] = 1;}
+                }
+                
+                if(neighboursOcean == 3 && ofRandom(1.0) > 0.90 && cellTypes[j*90 + i] == 4){ //if ive exactly 1 neighbours of city and then some probability thing
+                    if(extremePollution){cellTypes[j*90 + i] = 2;}
+//                    else {cellTypes[j*90 + i] = 1;}
                 }
                 
             }
@@ -253,7 +364,7 @@ void ofApp::cellure(){ //we'll call this once a year
     cellTypes[25*90 + 60] = 4;     // MEX = 375, 479
     cellTypes[44*90 + 76] = 4;     // bog = 470, 650
 
-    
+    iceCounter = iceCounterTemp;
     
 }
 
@@ -437,6 +548,17 @@ void ofApp::keyPressed(int key){
         case 'o':
             populationIncreasing = !populationIncreasing;
             std::cout << "population state flipped" << std::endl;
+            break;
+        case 's':
+            start = !start;
+            std::cout << "play pause" << std::endl;
+
+            break;
+            
+        case 'a':
+            animate = !animate;
+            std::cout << "animate" << std::endl;
+
             break;
     }
 }

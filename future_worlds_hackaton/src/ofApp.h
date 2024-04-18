@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxOsc.h"
 #include "ofxOpenCv.h"
+#include <iostream>
 
 
 #define PORT 8000
@@ -28,8 +29,34 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo) override;
 		void gotMessage(ofMessage msg) override;
     
+    //Send OSC Message to Ableton
     void sendOsc();
+    
     void receiveOsc();
+        
+    void createLandmasses();
+    
+    void drawLandmassesPolylines();
+    
+    void createEarthVector();
+    
+    void drawEarthFromVCellTypesVector();
+    
+    void drawEarthFromVCellTypesVectorWobble();
+
+    void oldDrawEarth();
+    
+    void checkDataDirection();
+    
+    int iceCell(int i, int j);
+    
+    void cellular();
+    
+    void currentMessyDraw();
+    
+    void drawPlanets();
+    
+    void drawGUI();
     
     int centreH;
     int centreW;
@@ -49,20 +76,15 @@ class ofApp : public ofBaseApp{
     ofxCvGrayscaleImage     grayDiff;
     ofxCvContourFinder      contourFinder;
 
-    int                        thresholdValue;
+    int thresholdValue;
     float thresh;
-    bool                    bLearnBackground;
-    
-
+    bool bLearnBackground;
     
     int imgWidth;
     int imgHeight;
-    
-    void squares(ofPolyline polyline);
-    
     vector<ofPolyline> landmasses;
     
-    void createLandmasses();
+
     
     int startYear;
     int endYear;
@@ -81,19 +103,7 @@ class ofApp : public ofBaseApp{
     
     vector<int> cellTypes;
     
-    void createEarthVector();
-    
-    void drawEarthFromVCellTypesVector();
-    
-    void drawEarthFromVCellTypesVectorWobble();
 
-    void oldDrawEarth();
-    
-    void checkDataDirection();
-    
-    int iceCell(int i, int j);
-    
-    void cellure();
     
     bool animate = true;
     
